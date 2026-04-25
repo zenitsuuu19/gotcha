@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be My Friend? 🐱</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: 'Comic Sans MS', 'Segoe UI', cursive;
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 50%, #ff9a9e 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    padding: 20px;
+  }
+
+  .heart-bg {
+    position: absolute;
+    color: rgba(255, 105, 180, 0.4);
+    animation: floatUp linear infinite;
+    user-select: none;
+    pointer-events: none;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+  }
+
+  .container {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    padding: 40px;
+    border-radius: 30px;
+    box-shadow: 0 20px 60px rgba(255, 105, 180, 0.4);
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    z-index: 10;
+    border: 3px dashed #ff9bb3;
+  }
+
+  h1 {
+    font-size: 1.8em;
+    color: #ff5b8a;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 0 #fff;
+  }
+
+  /* The Kitten */
+  .kitten {
+    width: 200px;
+    height: 220px;
+    margin: 0 auto 20px;
+    position: relative;
+    animation: bounce 2s ease-in-out infinite;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .kitten.crying { animation: shake 0.5s ease-in-out infinite; }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px) rotate(-2deg); }
+    75% { transform: translateX(5px) rotate(2deg); }
+  }
+
+  .kitten.upset {
+    animation: none;
+    transform: scaleX(-1) rotate(0deg);
+  }
+
+  .head {
+    width: 160px;
+    height: 140px;
+    background: #ffb380;
+    border-radius: 50% 50% 45% 45%;
+    position: absolute;
+    top: 30px;
+    left: 20px;
+    box-shadow: inset -10px -10px 20px rgba(0,0,0,0.1);
+  }
+
+  .upset .head {
+    background: #d99566;
+  }
+
+  .ear {
+    width: 0; height: 0;
+    border-left: 25px solid transparent;
+    border-right: 25px solid transparent;
+    border-bottom: 45px solid #ffb380;
+    position: absolute;
+    top: 0;
+  }
+  .ear.left { left: 25px; transform: rotate(-20deg); }
+  .ear.right { right: 25px; transform: rotate(20deg); }
+
+  .upset .ear { border-bottom-color: #d99566; transform: rotate(180deg); top: 5px; }
+  .upset .ear.left { left: 25px; }
+  .upset .ear.right { right: 25px; }
+
+  .ear-inner {
+    width: 0; height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-bottom: 22px solid #ff9999;
+    position: absolute;
+    top: 15px;
+  }
+  .ear.left .ear-inner { left: -12px; }
+  .ear.right .ear-inner { right: -12px; }
+
+  .eye {
+    width: 28px;
+    height: 35px;
+    background: #2c2c2c;
+    border-radius: 50%;
+    position: absolute;
+    top: 70px;
+    transition: all 0.3s;
+  }
+  .eye.left { left: 50px; }
+  .eye.right { right: 50px; }
+
+  .eye::after {
+    content: '';
+    width: 10px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 8px;
+    left: 8px;
+  }
+
+  .crying .eye {
+    height: 15px;
+    border-radius: 50% 50% 0 0;
+    background: #2c2c2c;
+    border-bottom: 3px solid #2c2c2c;
+  }
+  .crying .eye::after { display: none; }
+
+  .upset .eye { display: none; }
+
+  .tear {
+    width: 12px; height: 18px;
+    background: linear-gradient(to bottom, #87ceeb, #4ba8d8);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    position: absolute;
+    top: 90px;
+    opacity: 0;
+    box-shadow: inset -2px -2px 4px rgba(0,0,0,0.1);
+  }
+  .tear.left { left: 58px; }
+  .tear.right { right: 58px; }
+
+  .crying .tear { animation: tearFall 1s ease-in infinite; }
+  @keyframes tearFall {
+    0% { opacity: 0; transform: translateY(0) scale(0.5); }
+    20% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(60px) scale(1.2); }
+  }
+
+  .nose {
+    width: 14px; height: 10px;
+    background: #ff6b9d;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    position: absolute;
+    top: 105px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .upset .nose { display: none; }
+
+  .mouth {
+    position: absolute;
+    top: 118px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 15px;
+  }
+  .mouth::before, .mouth::after {
+    content: '';
+    position: absolute;
+    width: 12px; height: 8px;
+    border: 2px solid #2c2c2c;
+    border-top: none;
+    border-right: none;
+    border-radius: 0 0 0 12px;
+    top: 0;
+  }
+  .mouth::before { left: 0; }
+  .mouth::after { right: 0; transform: scaleX(-1); }
+
+  .crying .mouth {
+    width: 25px; height: 20px;
+    background: #2c2c2c;
+    border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
+    top: 120px;
+  }
+  .crying .mouth::before, .crying .mouth::after { display: none; }
+
+  .upset .mouth { display: none; }
+
+  .cheek {
+    width: 20px; height: 14px;
+    background: #ff9999;
+    border-radius: 50%;
+    position: absolute;
+    top: 105px;
+    opacity: 0.6;
+  }
+  .cheek.left { left: 25px; }
+  .cheek.right { right: 25px; }
+  .upset .cheek { display: none; }
+
+  .whisker {
+    position: absolute;
+    width: 30px;
+    height: 1px;
+    background: #2c2c2c;
+    top: 110px;
+  }
+  .whisker.left-1 { left: -15px; transform: rotate(-10deg); }
+  .whisker.left-2 { left: -15px; top: 120px; transform: rotate(5deg); }
+  .whisker.right-1 { right: -15px; transform: rotate(10deg); }
+  .whisker.right-2 { right: -15px; top: 120px; transform: rotate(-5deg); }
+  .upset .whisker { display: none; }
+
+  /* Tail */
+  .tail {
+    width: 60px;
+    height: 20px;
+    background: #ffb380;
+    border-radius: 30px;
+    position: absolute;
+    bottom: 10px;
+    right: -20px;
+    transform: rotate(-30deg);
+    display: none;
+  }
+  .upset .tail { display: block; background: #d99566; }
+
+  /* Hearts in hand for love sign */
+  .love-hands {
+    position: absolute;
+    top: 150px;
+    width: 100%;
+    display: none;
+    justify-content: space-between;
+    padding: 0 20px;
+  }
+  .happy .love-hands { display: flex; }
+  .love-hands span {
+    font-size: 30px;
+    animation: heartBeat 1s ease-in-out infinite;
+  }
+  @keyframes heartBeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+  }
+
+  /* Speech bubble */
+  .speech {
+    background: white;
+    padding: 15px 25px;
+    border-radius: 25px;
+    margin: 10px auto 25px;
+    font-size: 1.2em;
+    color: #ff5b8a;
+    font-weight: bold;
+    position: relative;
+    display: inline-block;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border: 2px solid #ffb3c6;
+    max-width: 400px;
+    min-height: 50px;
+    transition: all 0.3s ease;
+  }
+  .speech::after {
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-bottom: 12px solid white;
+  }
+
+  /* Buttons */
+  .buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+    position: relative;
+    height: 70px;
+  }
+
+  button {
+    padding: 15px 40px;
+    font-size: 1.3em;
+    font-family: inherit;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+
+  .yes-btn {
+    background: linear-gradient(135deg, #4caf50, #45a049);
+    color: white;
+  }
+  .yes-btn:hover {
+    transform: scale(1.15);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.5);
+  }
+
+  .no-btn {
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+    color: white;
+    transition: all 0.4s ease;
+  }
+
+  /* Win screen */
+  .win-screen { display: none; text-align: center; }
+  .win-screen.show { display: block; animation: zoomIn 0.5s ease; }
+  @keyframes zoomIn {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .win-screen h2 {
+    color: #ff5b8a;
+    font-size: 2em;
+    margin: 20px 0;
+  }
+
+  .happy .mouth {
+    width: 40px; height: 25px;
+    background: #ff6b9d;
+    border-radius: 0 0 50% 50%;
+    border-top: 3px solid #2c2c2c;
+    top: 115px;
+  }
+  .happy .mouth::before, .happy .mouth::after { display: none; }
+
+  .confetti {
+    position: fixed;
+    width: 10px; height: 10px;
+    pointer-events: none;
+    animation: confettiFall 3s linear forwards;
+    z-index: 1000;
+  }
+  @keyframes confettiFall {
+    0% { transform: translateY(-100vh) rotate(0); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+
+  @media (max-width: 500px) {
+    h1 { font-size: 1.4em; }
+    .speech { font-size: 1em; padding: 12px 18px; }
+    button { padding: 12px 25px; font-size: 1.1em; }
+    .buttons { gap: 10px; }
+    .container { padding: 25px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container" id="container">
+  <div id="mainScreen">
+    <h1>🌸 Hii! A Cute Kitten Wants to Meet You! 🌸</h1>
+    
+    <div class="kitten" id="kitten">
+      <div class="ear left"><div class="ear-inner"></div></div>
+      <div class="ear right"><div class="ear-inner"></div></div>
+      <div class="head">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+        <div class="tear left"></div>
+        <div class="tear right"></div>
+        <div class="cheek left"></div>
+        <div class="cheek right"></div>
+        <div class="whisker left-1"></div>
+        <div class="whisker left-2"></div>
+        <div class="whisker right-1"></div>
+        <div class="whisker right-2"></div>
+        <div class="nose"></div>
+        <div class="mouth"></div>
+      </div>
+      <div class="love-hands">
+        <span>❤️</span>
+        <span>❤️</span>
+      </div>
+      <div class="tail"></div>
+    </div>
+
+    <div class="speech" id="speech">Will you be my friend? 🥺</div>
+
+    <div class="buttons" id="buttons">
+      <button class="yes-btn" id="yesBtn">Yes! 💖</button>
+      <button class="no-btn" id="noBtn">No 😢</button>
+    </div>
+  </div>
+
+  <div class="win-screen" id="winScreen">
+    <div class="kitten happy" id="happyKitten">
+      <div class="ear left"><div class="ear-inner"></div></div>
+      <div class="ear right"><div class="ear-inner"></div></div>
+      <div class="head">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+        <div class="cheek left"></div>
+        <div class="cheek right"></div>
+        <div class="whisker left-1"></div>
+        <div class="whisker left-2"></div>
+        <div class="whisker right-1"></div>
+        <div class="whisker right-2"></div>
+        <div class="nose"></div>
+        <div class="mouth"></div>
+      </div>
+      <div class="love-hands">
+        <span>❤️</span>
+        <span>❤️</span>
+      </div>
+    </div>
+    <h2 id="winTitle">YAY! 🎉</h2>
+    <div class="speech" id="winMessage">We are best friends forever! 💕🐾</div>
+  </div>
+</div>
+
+<script>
+const noBtn = document.getElementById('noBtn');
+const yesBtn = document.getElementById('yesBtn');
+const kitten = document.getElementById('kitten');
+const speech = document.getElementById('speech');
+const mainScreen = document.getElementById('mainScreen');
+const winScreen = document.getElementById('winScreen');
+const winMessage = document.getElementById('winMessage');
+const winTitle = document.getElementById('winTitle');
+
+let noClickCount = 0;
+let cryingTimeout;
+
+const messages = [
+  "please 🥺",
+  "itna bhi kya gussa karna, maan bhi jao nah 😿",
+  "please nah ban jao nah mera frnd 💔",
+  "i promise, main bahut acha kheyal rakhunga apka, ab maan bhi jao nah 🙏"
+];
+
+// Move No button to a random safe position within viewport
+function moveNoButton() {
+  const btnWidth = noBtn.offsetWidth;
+  const btnHeight = noBtn.offsetHeight;
+  
+  // Safe area within viewport (with padding)
+  const padding = 20;
+  const maxX = window.innerWidth - btnWidth - padding;
+  const maxY = window.innerHeight - btnHeight - padding;
+  
+  const randomX = Math.max(padding, Math.random() * maxX);
+  const randomY = Math.max(padding, Math.random() * maxY);
+  
+  noBtn.style.position = 'fixed';
+  noBtn.style.left = randomX + 'px';
+  noBtn.style.top = randomY + 'px';
+  noBtn.style.margin = '0';
+  noBtn.style.zIndex = '100';
+}
+
+// Handle No button click
+function handleNoClick(e) {
+  if (e) e.preventDefault();
+  
+  noClickCount++;
+  
+  if (noClickCount <= 4) {
+    // Show specific message
+    speech.textContent = messages[noClickCount - 1];
+    
+    // Make kitten cry
+    kitten.classList.remove('upset');
+    kitten.classList.add('crying');
+    
+    // Move the button
+    setTimeout(moveNoButton, 50);
+    
+  } else {
+    // 5th time onwards - kitten is upset and turns away
+    speech.textContent = "jao meko ab baat nehi karni 😤";
+    kitten.classList.remove('crying');
+    kitten.classList.add('upset');
+    
+    // Still move the button
+    setTimeout(moveNoButton, 50);
+  }
+  
+  // Reset crying after a delay (but keep upset state if 5+)
+  clearTimeout(cryingTimeout);
+  cryingTimeout = setTimeout(() => {
+    if (noClickCount < 5) {
+      kitten.classList.remove('crying');
+      speech.textContent = "Will you be my friend? 🥺";
+    }
+  }, 4000);
+}
+
+// Both hover and click trigger the dodge (so it moves before being clicked too)
+noBtn.addEventListener('mouseover', handleNoClick);
+noBtn.addEventListener('click', handleNoClick);
+noBtn.addEventListener('touchstart', handleNoClick);
+
+// YES button
+yesBtn.addEventListener('click', () => {
+  // Custom message based on when they said yes
+  if (noClickCount === 1 || noClickCount === 2) {
+    winTitle.textContent = "Awww! 💕";
+    winMessage.textContent = "kitni jaldi maan gaye appp, thanks 🥰❤️";
+  } else if (noClickCount === 0) {
+    winTitle.textContent = "YAY! 🎉";
+    winMessage.textContent = "We are best friends forever! 💕🐾";
+  } else if (noClickCount >= 5) {
+    winTitle.textContent = "Finally! 😊";
+    winMessage.textContent = "thank you for becoming my friend! 💖";
+  } else {
+    winTitle.textContent = "YAY! 🎉";
+    winMessage.textContent = "thanks for being my friend! 💕🐾";
+  }
+  
+  mainScreen.style.display = 'none';
+  winScreen.classList.add('show');
+  launchConfetti();
+});
+
+// Confetti
+function launchConfetti() {
+  const colors = ['#ff5b8a', '#ffb3c6', '#4caf50', '#ffd700', '#87ceeb', '#ff9a9e'];
+  for (let i = 0; i < 100; i++) {
+    setTimeout(() => {
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      confetti.style.left = Math.random() * 100 + 'vw';
+      confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+      confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+      document.body.appendChild(confetti);
+      setTimeout(() => confetti.remove(), 5000);
+    }, i * 30);
+  }
+}
+
+// Floating background hearts
+function createHeart() {
+  const heart = document.createElement('div');
+  heart.className = 'heart-bg';
+  heart.textContent = ['💕', '💖', '🌸', '✨', '🐾'][Math.floor(Math.random() * 5)];
+  heart.style.left = Math.random() * 100 + 'vw';
+  heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+  heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 10000);
+}
+setInterval(createHeart, 600);
+
+// Make sure button stays inside on window resize
+window.addEventListener('resize', () => {
+  if (noBtn.style.position === 'fixed') {
+    const rect = noBtn.getBoundingClientRect();
+    if (rect.right > window.innerWidth || rect.bottom > window.innerHeight) {
+      moveNoButton();
+    }
+  }
+});
+</script>
+</body>
+</html>
